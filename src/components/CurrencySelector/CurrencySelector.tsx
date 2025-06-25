@@ -1,8 +1,9 @@
 import type { Currency } from "../../api/types";
+import "./CurrencySelector.scss";
 
 interface CurrencySelectorProps {
   currencies: Currency[];
-  selectedCurrency: string;
+  selectedCurrency: string; // This will be the short_code
   onChange: (currencyCode: string) => void;
   label: string;
   id: string;
@@ -47,8 +48,11 @@ export function CurrencySelector({
         >
           <option value="">Select a currency</option>
           {currencies.map((currency) => (
-            <option key={currency.code} value={currency.code}>
-              {currency.flag} {currency.code} - {currency.name}
+            <option key={currency.id} value={currency.short_code}>
+              {currency.symbol_first
+                ? `${currency.symbol} ${currency.name}`
+                : `${currency.name} ${currency.symbol}`}
+              {` (${currency.short_code})`}
             </option>
           ))}
         </select>

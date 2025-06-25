@@ -1,0 +1,67 @@
+/* Home page styles */
+.home {
+  max-width: 800px;
+  margin: 0 auto;
+
+  &__header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  &__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: #1a1a1a;
+  }
+
+  &__subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  &__main {
+    background: var(--white);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+  }
+}
+
+/* Converter form styles */
+.converter-form {
+  &__row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+  }
+
+  &__swap-btn {
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color var(--transition);
+    background: var(--primary-color);
+    color: var(--white);
+    padding: 0.75rem 1rem;
+    font-size: 1.2rem;
+    align-self: flex-end;
+
+    &:hover:not(:disabled) {
+      background: var(--primary-hover);
+    }
+
+    &:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+  }
+
+  &__result {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+  }
+}

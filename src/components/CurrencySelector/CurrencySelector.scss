@@ -1,0 +1,50 @@
+/* Currency selector styles */
+.currency-selector {
+  flex: 1;
+
+  &__label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  &__container {
+    position: relative;
+  }
+
+  &__select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    background: var(--white);
+    transition: border-color var(--transition);
+
+    &:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    &:disabled {
+      background: var(--background-light);
+      cursor: not-allowed;
+    }
+  }
+
+  &__loading {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+
+  &__error {
+    color: var(--text-error);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+}

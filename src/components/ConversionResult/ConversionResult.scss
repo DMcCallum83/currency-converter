@@ -1,0 +1,44 @@
+/* Conversion result styles */
+.conversion-result {
+  &__loading,
+  &__error,
+  &__placeholder {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+  }
+
+  &__error {
+    color: var(--text-error);
+  }
+
+  &__main {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  &__amount {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  &__converted {
+    color: var(--primary-color);
+  }
+
+  &__details {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  &__rate {
+    margin-bottom: 0.5rem;
+  }
+
+  &__timestamp {
+    font-style: italic;
+  }
+}

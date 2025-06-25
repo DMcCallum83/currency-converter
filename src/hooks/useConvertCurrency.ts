@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { convertCurrency } from "../api/currencyBeacon";
-import type { ConversionRequest } from "../api/types";
+import type { ConversionRequest, ConversionResult } from "../api/types";
 
 /**
  * Custom hook to convert currency amounts
@@ -12,6 +12,6 @@ export function useConvertCurrency(params: ConversionRequest | null) {
     queryFn: () => convertCurrency(params!),
     enabled: Boolean(params && params.from && params.to && params.amount > 0),
     staleTime: 1000 * 60 * 5, // 5 minutes - exchange rates change frequently
-    select: (data) => data.response,
+    select: (data) => data.response as ConversionResult,
   });
 }
