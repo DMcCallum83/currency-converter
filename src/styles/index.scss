@@ -3,6 +3,6 @@
  * This file is automatically imported by Vite into all SCSS files
  * No need to manually import this file in individual components
  */
-@import "./theme.scss";
-@import "./mixins.scss";
-@import "./globals.scss";
+@use "./theme.scss";
+@use "./mixins.scss";
+@use "./globals.scss";
