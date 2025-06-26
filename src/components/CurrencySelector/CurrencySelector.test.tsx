@@ -6,28 +6,25 @@ import type { Currency } from "../../api/types";
 // Mock currencies for testing
 const mockCurrencies: Currency[] = [
   {
-    code: "USD",
+    id: 1,
     name: "US Dollar",
+    short_code: "USD",
     symbol: "$",
-    flag: "🇺🇸",
-    decimal_digits: 2,
-    rounding: 0,
+    symbol_first: true,
   },
   {
-    code: "EUR",
+    id: 2,
     name: "Euro",
+    short_code: "EUR",
     symbol: "€",
-    flag: "🇪🇺",
-    decimal_digits: 2,
-    rounding: 0,
+    symbol_first: true,
   },
   {
-    code: "GBP",
+    id: 3,
     name: "British Pound",
+    short_code: "GBP",
     symbol: "£",
-    flag: "🇬🇧",
-    decimal_digits: 2,
-    rounding: 0,
+    symbol_first: true,
   },
 ];
 
@@ -44,7 +41,6 @@ describe("CurrencySelector", () => {
     render(<CurrencySelector {...defaultProps} />);
 
     expect(screen.getByLabelText("Test Currency")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("")).toBeInTheDocument();
     expect(screen.getByText("Select a currency")).toBeInTheDocument();
   });
 
@@ -54,9 +50,9 @@ describe("CurrencySelector", () => {
     const select = screen.getByRole("combobox");
     fireEvent.click(select);
 
-    expect(screen.getByText("🇺🇸 USD - US Dollar")).toBeInTheDocument();
-    expect(screen.getByText("🇪🇺 EUR - Euro")).toBeInTheDocument();
-    expect(screen.getByText("🇬🇧 GBP - British Pound")).toBeInTheDocument();
+    expect(screen.getByText("US Dollar | USD | $")).toBeInTheDocument();
+    expect(screen.getByText("Euro | EUR | €")).toBeInTheDocument();
+    expect(screen.getByText("British Pound | GBP | £")).toBeInTheDocument();
   });
 
   it("calls onChange when currency is selected", () => {
@@ -72,7 +68,22 @@ describe("CurrencySelector", () => {
   it("displays selected currency", () => {
     render(<CurrencySelector {...defaultProps} selectedCurrency="EUR" />);
 
-    expect(screen.getByDisplayValue("EUR")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Euro | EUR | €")).toBeInTheDocument();
+  });
+
+  it("sets correct value attribute when currency is selected", () => {
+    render(<CurrencySelector {...defaultProps} selectedCurrency="EUR" />);
+
+    const select = screen.getByRole("combobox");
+    expect(select).toHaveValue("EUR");
+  });
+
+  it("shows placeholder when no currency is selected", () => {
+    render(<CurrencySelector {...defaultProps} selectedCurrency="" />);
+
+    expect(screen.getByDisplayValue("Select a currency")).toBeInTheDocument();
+    const select = screen.getByRole("combobox");
+    expect(select).toHaveValue("");
   });
 
   it("shows loading state", () => {
@@ -113,5 +124,20 @@ describe("CurrencySelector", () => {
     const select = screen.getByRole("combobox");
     expect(select).toHaveAttribute("aria-describedby", "test-currency-error");
     expect(select).toHaveAttribute("aria-invalid", "true");
+  });
+
+  it("is disabled when both disabled and loading are true", () => {
+    render(
+      <CurrencySelector {...defaultProps} disabled={true} isLoading={true} />
+    );
+
+    expect(screen.getByRole("combobox")).toBeDisabled();
+  });
+
+  it("handles empty currencies array", () => {
+    render(<CurrencySelector {...defaultProps} currencies={[]} />);
+
+    expect(screen.getByText("Select a currency")).toBeInTheDocument();
+    expect(screen.queryByText("US Dollar | USD | $")).not.toBeInTheDocument();
   });
 });

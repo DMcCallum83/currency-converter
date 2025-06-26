@@ -64,7 +64,8 @@ export function Home() {
   const handleFromCurrencyChange = useCallback(
     (shortCode: string) => {
       setAmount("");
-      setFromCurrency(findCurrencyByCode(shortCode));
+      const foundCurrency = findCurrencyByCode(shortCode);
+      setFromCurrency(foundCurrency);
     },
     [findCurrencyByCode]
   );
