@@ -1,6 +1,10 @@
 .app {
   min-height: 100vh;
-  padding: 2rem 1rem;
+  padding: var(--spacing-xx-large) var(--spacing-large);
+
+  @media (max-width: 768px) {
+    padding: var(--spacing-large) var(--spacing-medium);
+  }
 }
 
 /* Responsive design */

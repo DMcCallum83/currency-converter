@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { CurrencySelector } from "../../components/CurrencySelector";
 import { AmountInput } from "../../components/AmountInput";
 import { ConversionResult } from "../../components/ConversionResult";
@@ -26,16 +26,19 @@ export function Home() {
   } = useCurrencies();
 
   // Helper function to find currency by short_code
-  const findCurrencyByCode = (shortCode: string): SelectedCurrency | null => {
-    const currency = currencies.find((c) => c.short_code === shortCode);
-    return currency
-      ? {
-          short_code: currency.short_code,
-          symbol: currency.symbol,
-          symbol_first: currency.symbol_first,
-        }
-      : null;
-  };
+  const findCurrencyByCode = useCallback(
+    (shortCode: string): SelectedCurrency | null => {
+      const currency = currencies.find((c) => c.short_code === shortCode);
+      return currency
+        ? {
+            short_code: currency.short_code,
+            symbol: currency.symbol,
+            symbol_first: currency.symbol_first,
+          }
+        : null;
+    },
+    [currencies]
+  );
 
   // Prepare conversion request
   const conversionRequest: ConversionRequest | null =
@@ -58,18 +61,26 @@ export function Home() {
     error: conversionError,
   } = useConvertCurrency(conversionRequest);
 
-  const handleFromCurrencyChange = (shortCode: string) => {
-    setFromCurrency(findCurrencyByCode(shortCode));
-  };
+  const handleFromCurrencyChange = useCallback(
+    (shortCode: string) => {
+      setAmount("");
+      setFromCurrency(findCurrencyByCode(shortCode));
+    },
+    [findCurrencyByCode]
+  );
 
-  const handleToCurrencyChange = (shortCode: string) => {
-    setToCurrency(findCurrencyByCode(shortCode));
-  };
+  const handleToCurrencyChange = useCallback(
+    (shortCode: string) => {
+      setAmount("");
+      setToCurrency(findCurrencyByCode(shortCode));
+    },
+    [findCurrencyByCode]
+  );
 
-  const handleSwapCurrencies = () => {
+  const handleSwapCurrencies = useCallback(() => {
     setFromCurrency(toCurrency);
     setToCurrency(fromCurrency);
-  };
+  }, [fromCurrency, toCurrency]);
 
   const isSwapDisabled = !fromCurrency || !toCurrency;
 

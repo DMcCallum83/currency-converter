@@ -49,10 +49,7 @@ export function CurrencySelector({
           <option value="">Select a currency</option>
           {currencies.map((currency) => (
             <option key={currency.id} value={currency.short_code}>
-              {currency.symbol_first
-                ? `${currency.symbol} ${currency.name}`
-                : `${currency.name} ${currency.symbol}`}
-              {` (${currency.short_code})`}
+              {currency.name} | {`${currency.short_code} | ${currency.symbol}`}
             </option>
           ))}
         </select>
