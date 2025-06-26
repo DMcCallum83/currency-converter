@@ -1,16 +1,12 @@
+import type { ConversionResult, SelectedCurrency } from "../../api/types";
+import "./ConversionResult.scss";
+
 interface ConversionResultProps {
-  result: {
-    from: string;
-    to: string;
-    amount: number;
-    converted: number;
-    rate: number;
-    last_updated: string;
-  } | null;
+  result: ConversionResult | undefined;
   isLoading: boolean;
   error: string | null;
-  fromCurrency: string;
-  toCurrency: string;
+  fromCurrency: SelectedCurrency | null;
+  toCurrency: SelectedCurrency | null;
   amount: string;
 }
 
@@ -60,13 +56,24 @@ export function ConversionResult({
     );
   }
 
-  const formatCurrency = (value: number, currencyCode: string) => {
-    return new Intl.NumberFormat("en-US", {
+  const formatCurrency = (
+    value: number,
+    currencyCode: string,
+    symbol: string,
+    symbolFirst: boolean
+  ) => {
+    const formattedValue = new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: currencyCode,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(value);
+
+    // Remove the currency symbol from the formatted value and add it in the correct position
+    const valueWithoutSymbol = formattedValue.replace(/[^\d.,]/g, "");
+    return symbolFirst
+      ? `${symbol}${valueWithoutSymbol}`
+      : `${valueWithoutSymbol}${symbol}`;
   };
 
   const formatDate = (dateString: string) => {
@@ -83,19 +90,31 @@ export function ConversionResult({
     <div className="conversion-result">
       <div className="conversion-result__main">
         <div className="conversion-result__amount">
-          {formatCurrency(Number(amount), fromCurrency)} ={" "}
+          {formatCurrency(
+            Number(amount),
+            result.from,
+            fromCurrency.symbol,
+            fromCurrency.symbol_first
+          )}{" "}
+          ={" "}
           <span className="conversion-result__converted">
-            {formatCurrency(result.converted, toCurrency)}
+            {formatCurrency(
+              result.value,
+              result.to,
+              toCurrency.symbol,
+              toCurrency.symbol_first
+            )}
           </span>
         </div>
       </div>
 
       <div className="conversion-result__details">
         <div className="conversion-result__rate">
-          1 {fromCurrency} = {result.rate.toFixed(6)} {toCurrency}
+          1 {fromCurrency.short_code} = {result.value.toFixed(6)}{" "}
+          {toCurrency.short_code}
         </div>
         <div className="conversion-result__timestamp">
-          Last updated: {formatDate(result.last_updated)}
+          Last updated: {formatDate(result.date)}
         </div>
       </div>
     </div>
