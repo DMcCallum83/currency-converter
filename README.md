@@ -2,6 +2,10 @@
 
 A modern, accessible, and user-friendly currency converter built with Vite, React, TypeScript, React Query, and SCSS. The app fetches real-time currency data and conversion rates from [currencybeacon.com](https://currencybeacon.com).
 
+## Lighthouse
+
+![Lighthouse scores running against production build](./src/assets/lighthouse.png)
+
 ## Features
 
 - **Real-time Currency Conversion**: Convert between 170+ currencies using live exchange rates
@@ -75,7 +79,7 @@ npm test
 # Run tests once
 npm run test:run
 
-# Run tests with UI (if available)
+# Run tests with UI and coverage
 npm run test:ui
 ```
 
@@ -108,21 +112,21 @@ npm run lint
 
 ```
 src/
-├── api/                    # API functions and types
-│   ├── currencyBeacon.ts   # Currency Beacon API integration
-│   └── types.ts           # TypeScript interfaces
-├── components/            # Reusable UI components
-│   ├── CurrencySelector/  # Currency dropdown component
-│   ├── AmountInput/       # Numeric input component
-│   └── ConversionResult/  # Conversion display component
-├── hooks/                 # Custom React hooks
-│   ├── useCurrencies.ts   # Currency list fetching
+├── api/                      # API functions and types
+│   ├── currencyBeacon.ts     # Currency Beacon API integration
+│   └── types.ts              # TypeScript interfaces
+├── components/               # Reusable UI components
+│   ├── CurrencySelector/     # Currency dropdown component
+│   ├── AmountInput/          # Numeric input component
+│   └── ConversionResult/     # Conversion display component
+├── hooks/                    # Custom React hooks
+│   ├── useCurrencies.ts      # Currency list fetching
 │   └── useConvertCurrency.ts # Currency conversion
-├── pages/                 # Page components
-│   └── Home/             # Main app page
-├── App.tsx               # Root component
-├── App.scss              # Global styles
-└── main.tsx              # App entry point
+├── pages/                    # Page components
+│   └── Home/                 # Main app page
+├── App.tsx                   # Root component
+├── App.scss                  # Global styles
+└── main.tsx                  # App entry point
 ```
 
 ## API Integration
@@ -134,7 +138,7 @@ The app uses the [Currency Beacon API](https://currencybeacon.com/api-documentat
 
 ### API Key Security
 
-⚠️ **Important**: The API key is exposed in the frontend as it's a public API. For production applications, consider:
+⚠️ **Important**: The API key is exposed in the frontend as it's a public API. For production applications, implement:
 
 1. **Backend Proxy**: Create a backend service to proxy API calls
 2. **Rate Limiting**: Implement rate limiting on your backend
