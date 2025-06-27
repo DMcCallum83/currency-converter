@@ -1,8 +1,9 @@
 import type { Currency } from "../../api/types";
+import "./CurrencySelector.scss";
 
 interface CurrencySelectorProps {
   currencies: Currency[];
-  selectedCurrency: string;
+  selectedCurrency: string; // This will be the short_code
   onChange: (currencyCode: string) => void;
   label: string;
   id: string;
@@ -31,7 +32,11 @@ export function CurrencySelector({
 
   return (
     <div className="currency-selector">
-      <label htmlFor={id} className="currency-selector__label">
+      <label
+        htmlFor={id}
+        className="currency-selector__label"
+        id={`${id}-label`}
+      >
         {label}
       </label>
 
@@ -42,13 +47,13 @@ export function CurrencySelector({
           onChange={handleChange}
           disabled={disabled || isLoading}
           className="currency-selector__select"
-          aria-describedby={error ? `${id}-error` : undefined}
+          aria-describedby={error ? `${id}-error` : `${id}-label`}
           aria-invalid={!!error}
         >
           <option value="">Select a currency</option>
           {currencies.map((currency) => (
-            <option key={currency.code} value={currency.code}>
-              {currency.flag} {currency.code} - {currency.name}
+            <option key={currency.id} value={currency.short_code}>
+              {currency.name} | {`${currency.short_code} | ${currency.symbol}`}
             </option>
           ))}
         </select>

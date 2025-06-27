@@ -2,7 +2,6 @@ import type {
   CurrenciesResponse,
   ConversionRequest,
   ConversionResponse,
-  ApiError,
 } from "./types";
 
 const API_BASE_URL = "https://api.currencybeacon.com/v1";
@@ -23,10 +22,7 @@ export async function fetchCurrencies(): Promise<CurrenciesResponse> {
   const response = await fetch(url);
 
   if (!response.ok) {
-    const errorData: ApiError = await response.json();
-    throw new Error(
-      errorData.response.error.message || "Failed to fetch currencies"
-    );
+    throw new Error("Failed to fetch currencies");
   }
 
   return response.json();
@@ -44,10 +40,7 @@ export async function convertCurrency(
   const response = await fetch(url);
 
   if (!response.ok) {
-    const errorData: ApiError = await response.json();
-    throw new Error(
-      errorData.response.error.message || "Failed to convert currency"
-    );
+    throw new Error("Failed to convert currency");
   }
 
   return response.json();

@@ -1,0 +1,49 @@
+/* Conversion result styles */
+.conversion-result {
+  &__loading,
+  &__error,
+  &__placeholder {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-color-secondary);
+    font-size: 1.1rem;
+  }
+
+  &__error {
+    color: var(--text-error);
+  }
+
+  &__main {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  &__amount {
+    font-size: var(--font-size-heading-large);
+    font-weight: 600;
+    color: var(--text-color-primary);
+
+    @media (max-width: 768px) {
+      font-size: var(--font-size-heading-large);
+    }
+  }
+
+  &__converted {
+    color: var(--detail-magenta);
+  }
+
+  &__details {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: var(--font-size-medium);
+  }
+
+  &__rate {
+    margin-bottom: var(--spacing-medium);
+    font-weight: var(--font-weight-bold);
+  }
+
+  &__timestamp {
+    font-style: italic;
+  }
+}

@@ -1,18 +1,21 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { CurrencySelector } from "../../components/CurrencySelector";
 import { AmountInput } from "../../components/AmountInput";
 import { ConversionResult } from "../../components/ConversionResult";
 import { useCurrencies } from "../../hooks/useCurrencies";
 import { useConvertCurrency } from "../../hooks/useConvertCurrency";
-import type { ConversionRequest } from "../../api/types";
+import type { ConversionRequest, SelectedCurrency } from "../../api/types";
+import "./Home.scss";
 
 /**
  * Home page component - Main currency converter interface
  * Integrates all components and manages application state
  */
 export function Home() {
-  const [fromCurrency, setFromCurrency] = useState("");
-  const [toCurrency, setToCurrency] = useState("");
+  const [fromCurrency, setFromCurrency] = useState<SelectedCurrency | null>(
+    null
+  );
+  const [toCurrency, setToCurrency] = useState<SelectedCurrency | null>(null);
   const [amount, setAmount] = useState("");
 
   // Fetch currencies
@@ -22,6 +25,21 @@ export function Home() {
     error: currenciesError,
   } = useCurrencies();
 
+  // Helper function to find currency by short_code
+  const findCurrencyByCode = useCallback(
+    (shortCode: string): SelectedCurrency | null => {
+      const currency = currencies.find((c) => c.short_code === shortCode);
+      return currency
+        ? {
+            short_code: currency.short_code,
+            symbol: currency.symbol,
+            symbol_first: currency.symbol_first,
+          }
+        : null;
+    },
+    [currencies]
+  );
+
   // Prepare conversion request
   const conversionRequest: ConversionRequest | null =
     fromCurrency &&
@@ -30,8 +48,8 @@ export function Home() {
     !isNaN(Number(amount)) &&
     Number(amount) > 0
       ? {
-          from: fromCurrency,
-          to: toCurrency,
+          from: fromCurrency.short_code,
+          to: toCurrency.short_code,
           amount: Number(amount),
         }
       : null;
@@ -43,10 +61,27 @@ export function Home() {
     error: conversionError,
   } = useConvertCurrency(conversionRequest);
 
-  const handleSwapCurrencies = () => {
+  const handleFromCurrencyChange = useCallback(
+    (shortCode: string) => {
+      setAmount("");
+      const foundCurrency = findCurrencyByCode(shortCode);
+      setFromCurrency(foundCurrency);
+    },
+    [findCurrencyByCode]
+  );
+
+  const handleToCurrencyChange = useCallback(
+    (shortCode: string) => {
+      setAmount("");
+      setToCurrency(findCurrencyByCode(shortCode));
+    },
+    [findCurrencyByCode]
+  );
+
+  const handleSwapCurrencies = useCallback(() => {
     setFromCurrency(toCurrency);
     setToCurrency(fromCurrency);
-  };
+  }, [fromCurrency, toCurrency]);
 
   const isSwapDisabled = !fromCurrency || !toCurrency;
 
@@ -64,8 +99,8 @@ export function Home() {
           <div className="converter-form__row">
             <CurrencySelector
               currencies={currencies}
-              selectedCurrency={fromCurrency}
-              onChange={setFromCurrency}
+              selectedCurrency={fromCurrency?.short_code || ""}
+              onChange={handleFromCurrencyChange}
               label="From Currency"
               id="from-currency"
               isLoading={currenciesLoading}
@@ -84,8 +119,8 @@ export function Home() {
 
             <CurrencySelector
               currencies={currencies}
-              selectedCurrency={toCurrency}
-              onChange={setToCurrency}
+              selectedCurrency={toCurrency?.short_code || ""}
+              onChange={handleToCurrencyChange}
               label="To Currency"
               id="to-currency"
               isLoading={currenciesLoading}
@@ -106,7 +141,7 @@ export function Home() {
 
           <div className="converter-form__result">
             <ConversionResult
-              result={conversionResult || null}
+              result={conversionResult}
               isLoading={conversionLoading}
               error={conversionError?.message || null}
               fromCurrency={fromCurrency}

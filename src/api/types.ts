@@ -2,13 +2,27 @@
  * TypeScript interfaces for currencybeacon.com API responses
  */
 
-export interface Currency {
-  code: string;
+interface CurrencyApiReturn {
+  id: number;
   name: string;
+  short_code: string;
+  code: string;
+  precision: number;
+  subunit: number;
   symbol: string;
-  flag: string;
-  decimal_digits: number;
-  rounding: number;
+  symbol_first: boolean;
+  decimal_mark: string;
+  thousands_separator: string;
+}
+export type Currency = Pick<
+  CurrencyApiReturn,
+  "name" | "id" | "short_code" | "symbol" | "symbol_first"
+>;
+
+export interface SelectedCurrency {
+  short_code: string;
+  symbol: string;
+  symbol_first: boolean;
 }
 
 export interface CurrenciesResponse {
@@ -25,21 +39,25 @@ export interface ConversionRequest {
   amount: number;
 }
 
-export interface ConversionResponse {
+export type ConversionResponse = {
   meta: {
     code: number;
     disclaimer: string;
   };
   response: {
+    timestamp: number;
+    date: string;
     from: string;
     to: string;
     amount: number;
     value: number;
-    converted: number;
-    rate: number;
-    last_updated: string;
   };
-}
+};
+
+export type ConversionResult = Pick<
+  ConversionResponse["response"],
+  "from" | "to" | "amount" | "value" | "date" | "timestamp"
+>;
 
 export interface ApiError {
   meta: {
