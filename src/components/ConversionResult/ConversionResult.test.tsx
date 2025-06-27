@@ -1,23 +1,39 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { ConversionResult } from "./ConversionResult";
+import type {
+  ConversionResult as ConversionResultType,
+  SelectedCurrency,
+} from "../../api/types";
 
-const mockResult = {
+const mockResult: ConversionResultType = {
   from: "USD",
   to: "EUR",
   amount: 100,
-  converted: 85.5,
-  rate: 0.855,
-  last_updated: "2024-12-19T10:30:00Z",
+  value: 85.5,
+  date: "2024-12-19",
+  timestamp: 1702992600,
+};
+
+const mockFromCurrency: SelectedCurrency = {
+  short_code: "USD",
+  symbol: "$",
+  symbol_first: true,
+};
+
+const mockToCurrency: SelectedCurrency = {
+  short_code: "EUR",
+  symbol: "€",
+  symbol_first: true,
 };
 
 describe("ConversionResult", () => {
   const defaultProps = {
-    result: null,
+    result: undefined,
     isLoading: false,
     error: null,
-    fromCurrency: "",
-    toCurrency: "",
+    fromCurrency: null,
+    toCurrency: null,
     amount: "",
   };
 
@@ -51,18 +67,18 @@ describe("ConversionResult", () => {
       <ConversionResult
         {...defaultProps}
         result={mockResult}
-        fromCurrency="USD"
-        toCurrency="EUR"
+        fromCurrency={mockFromCurrency}
+        toCurrency={mockToCurrency}
         amount="100"
       />
     );
 
     // Check main conversion display
-    expect(screen.getByText(/100\.00 USD =/)).toBeInTheDocument();
-    expect(screen.getByText(/85\.50 EUR/)).toBeInTheDocument();
+    expect(screen.getByText(/\$100\.00 =/)).toBeInTheDocument();
+    expect(screen.getByText(/€85\.50/)).toBeInTheDocument();
 
     // Check rate information
-    expect(screen.getByText(/1 USD = 0\.855000 EUR/)).toBeInTheDocument();
+    expect(screen.getByText(/1 USD = 85\.500000 EUR/i)).toBeInTheDocument();
 
     // Check timestamp
     expect(screen.getByText(/Last updated:/)).toBeInTheDocument();
@@ -72,56 +88,56 @@ describe("ConversionResult", () => {
     const resultWithDifferentAmounts = {
       ...mockResult,
       amount: 1234.56,
-      converted: 1055.55,
+      value: 1055.55,
     };
 
     render(
       <ConversionResult
         {...defaultProps}
         result={resultWithDifferentAmounts}
-        fromCurrency="USD"
-        toCurrency="EUR"
+        fromCurrency={mockFromCurrency}
+        toCurrency={mockToCurrency}
         amount="1234.56"
       />
     );
 
-    expect(screen.getByText(/1,234\.56 USD =/)).toBeInTheDocument();
-    expect(screen.getByText(/1,055\.55 EUR/)).toBeInTheDocument();
+    expect(screen.getByText(/\$1,234\.56 =/)).toBeInTheDocument();
+    expect(screen.getByText(/€1,055\.55/)).toBeInTheDocument();
   });
 
   it("handles zero amount", () => {
     const zeroResult = {
       ...mockResult,
       amount: 0,
-      converted: 0,
+      value: 0,
     };
 
     render(
       <ConversionResult
         {...defaultProps}
         result={zeroResult}
-        fromCurrency="USD"
-        toCurrency="EUR"
+        fromCurrency={mockFromCurrency}
+        toCurrency={mockToCurrency}
         amount="0"
       />
     );
 
-    expect(screen.getByText(/0\.00 USD =/)).toBeInTheDocument();
-    expect(screen.getByText(/0\.00 EUR/)).toBeInTheDocument();
+    expect(screen.getByText(/\$0\.00 =/)).toBeInTheDocument();
+    expect(screen.getByText(/€0\.00/)).toBeInTheDocument();
   });
 
   it("displays rate with proper precision", () => {
     const resultWithLongRate = {
       ...mockResult,
-      rate: 0.123456789,
+      value: 0.123456789,
     };
 
     render(
       <ConversionResult
         {...defaultProps}
         result={resultWithLongRate}
-        fromCurrency="USD"
-        toCurrency="EUR"
+        fromCurrency={mockFromCurrency}
+        toCurrency={mockToCurrency}
         amount="100"
       />
     );
@@ -132,15 +148,15 @@ describe("ConversionResult", () => {
   it("formats date correctly", () => {
     const resultWithSpecificDate = {
       ...mockResult,
-      last_updated: "2024-12-19T15:30:45Z",
+      timestamp: 1702992645,
     };
 
     render(
       <ConversionResult
         {...defaultProps}
         result={resultWithSpecificDate}
-        fromCurrency="USD"
-        toCurrency="EUR"
+        fromCurrency={mockFromCurrency}
+        toCurrency={mockToCurrency}
         amount="100"
       />
     );
@@ -156,8 +172,8 @@ describe("ConversionResult", () => {
         result={mockResult}
         isLoading={true}
         error="Some error"
-        fromCurrency="USD"
-        toCurrency="EUR"
+        fromCurrency={mockFromCurrency}
+        toCurrency={mockToCurrency}
         amount="100"
       />
     );
@@ -173,8 +189,8 @@ describe("ConversionResult", () => {
         {...defaultProps}
         result={mockResult}
         error="API Error"
-        fromCurrency="USD"
-        toCurrency="EUR"
+        fromCurrency={mockFromCurrency}
+        toCurrency={mockToCurrency}
         amount="100"
       />
     );
@@ -188,8 +204,8 @@ describe("ConversionResult", () => {
       <ConversionResult
         {...defaultProps}
         result={mockResult}
-        fromCurrency=""
-        toCurrency=""
+        fromCurrency={null}
+        toCurrency={null}
         amount="100"
       />
     );
@@ -199,5 +215,43 @@ describe("ConversionResult", () => {
         "Enter an amount and select currencies to see the conversion"
       )
     ).toBeInTheDocument();
+  });
+
+  it("shows placeholder when amount is empty", () => {
+    render(
+      <ConversionResult
+        {...defaultProps}
+        result={mockResult}
+        fromCurrency={mockFromCurrency}
+        toCurrency={mockToCurrency}
+        amount=""
+      />
+    );
+
+    expect(
+      screen.getByText(
+        "Enter an amount and select currencies to see the conversion"
+      )
+    ).toBeInTheDocument();
+  });
+
+  it("handles symbol positioning correctly", () => {
+    const fromCurrencySymbolLast: SelectedCurrency = {
+      short_code: "USD",
+      symbol: "$",
+      symbol_first: false,
+    };
+
+    render(
+      <ConversionResult
+        {...defaultProps}
+        result={mockResult}
+        fromCurrency={fromCurrencySymbolLast}
+        toCurrency={mockToCurrency}
+        amount="100"
+      />
+    );
+
+    expect(screen.getByText(/100\.00\$ =/)).toBeInTheDocument();
   });
 });

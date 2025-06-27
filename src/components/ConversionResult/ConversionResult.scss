@@ -5,7 +5,7 @@
   &__placeholder {
     text-align: center;
     padding: 2rem;
-    color: var(--text-secondary);
+    color: var(--text-color-secondary);
     font-size: 1.1rem;
   }
 
@@ -19,23 +19,28 @@
   }
 
   &__amount {
-    font-size: 2rem;
+    font-size: var(--font-size-heading-large);
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--text-color-primary);
+
+    @media (max-width: 768px) {
+      font-size: var(--font-size-heading-large);
+    }
   }
 
   &__converted {
-    color: var(--primary-color);
+    color: var(--detail-magenta);
   }
 
   &__details {
     text-align: center;
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: var(--font-size-medium);
   }
 
   &__rate {
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-medium);
+    font-weight: var(--font-weight-bold);
   }
 
   &__timestamp {

@@ -76,8 +76,8 @@ export function ConversionResult({
       : `${valueWithoutSymbol}${symbol}`;
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString("en-US", {
+  const formatDate = (timestamp: number) => {
+    return new Date(timestamp * 1000).toLocaleString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -92,7 +92,7 @@ export function ConversionResult({
         <div className="conversion-result__amount">
           {formatCurrency(
             Number(amount),
-            result.from,
+            fromCurrency.short_code,
             fromCurrency.symbol,
             fromCurrency.symbol_first
           )}{" "}
@@ -100,7 +100,7 @@ export function ConversionResult({
           <span className="conversion-result__converted">
             {formatCurrency(
               result.value,
-              result.to,
+              toCurrency.short_code,
               toCurrency.symbol,
               toCurrency.symbol_first
             )}
@@ -114,7 +114,7 @@ export function ConversionResult({
           {toCurrency.short_code}
         </div>
         <div className="conversion-result__timestamp">
-          Last updated: {formatDate(result.date)}
+          Last updated: {formatDate(result.timestamp)}
         </div>
       </div>
     </div>

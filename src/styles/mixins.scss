@@ -2,8 +2,8 @@
 :root {
   @mixin focus-styles {
     &:focus {
-      outline: none;
-      border-color: $primary-color;
+      outline: 2px solid var(--border-color-magenta);
+      outline-offset: 2px;
     }
   }
 

@@ -30,6 +30,11 @@ export function AmountInput({
   // Update local amount when prop changes
   useEffect(() => {
     setLocalAmount(amount);
+    // Clear any pending debounce when prop changes
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current);
+      debounceTimeoutRef.current = null;
+    }
   }, [amount]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
